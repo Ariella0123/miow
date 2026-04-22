@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>猫家之旅 LEVEL 4</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- <style>
+        /* --- 基础布局 --- */
+        body {
+            margin: 0;
+            overflow: auto; 
+            min-height: 80vh;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* 确保内容居中 */
+        }
+
+        h1 {
+            font-size: 50px;
+            margin: 20px 0;
+            z-index: 1;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: url(miowbj.png);
+            background-size: cover;
+            filter: blur(5px); 
+            z-index: -1; 
+            transform: scale(1.1);
+        }
+
+        /* --- 菜单按钮 (同步自 LV3) --- */
+        #btn-level-menu {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 80px;
+            height: 80px;
+            cursor: pointer;
+            z-index: 100;
+            transition: transform 0.2s;
+        }
+        #btn-level-menu:hover { transform: scale(1.1); }
+        #btn-level-menu img { width: 100%; height: 100%; }
+
+        .main-content {
+            display: flex;
+            flex-direction: row; 
+            gap: 40px; 
+            padding: 20px;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        /* --- 饼干计分板 --- */
+        #cookie-counter {
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 3px solid #333;
+            border-radius: 50px;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        #cookie-counter img { width: 50px; height: auto; }
+        .counter-text { display: flex; flex-direction: column; align-items: flex-start; }
+        #cookie-counter p {
+            margin: 0;
+            font-weight: bold;
+            font-size: 16px;
+            color: #333;
+            line-height: 1.2;
+        }
+        #remaining-count { font-size: 30px; color: #d9534f; }
+
+        /* --- 游戏区域 --- */
+        #game-stage {
+            position: relative;
+            width: 500px; 
+            height: 500px;
+            border: 5px solid #333;
+            background-color: #fff;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(10, 50px);
+            grid-template-rows: repeat(10, 50px);
+            width: 100%; height: 100%;
+        }
+
+        .cell { width: 50px; height: 50px; box-sizing: border-box; position: relative; }
+        .path { background-color: #fff; }
+        .wall { background-color: #555; }
+        .home-cell { background-color: #ffffff; } 
+
+        .cookie img {
+            position: absolute;
+            width: 35px; height: 35px;
+            top: 7.5px; left: 7.5px;
+            object-fit: contain;
+        }
+
+        /* --- 玩家与终点 --- */
+        #player1 {
+            position: absolute;
+            width: 40px; height: 40px;
+            left: 5px; top: 5px;
+            transition: all 0.1s ease-out;
+            z-index: 10;
+        }
+        #player1 img { width: 100%; height: 100%; object-fit: contain; }
+
+        #home {
+            position: absolute;
+            width: 50px; height: 50px;
+            left: 450px; top: 450px;
+            z-index: 5;
+        }
+        #home img { width: 100%; height: 100%; object-fit: contain; }
+
+        /* --- 胜利结算框 --- */
+        #seterus {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 350px;
+            display: none; 
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            z-index: 101;
+            text-align: center;
+        }
+        #balikrumah img { width: 100%; height: auto; border-radius: 15px; margin-bottom: 15px; }
+
+        .nxt { display: flex; justify-content: center; align-items: center; gap: 10px; }
+        .rmh, .blt, .nxtlv {
+            border: 2px solid black;
+            border-radius: 50px;
+            background-color: rgb(252, 255, 154);
+            display: flex; align-items: center; justify-content: center;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+        .rmh:hover, .blt:hover, .nxtlv:hover { transform: scale(1.1); }
+        .rmh, .blt { padding: 10px; }
+        .nxtlv { padding: 15px 20px; }
+        #nxtlv { text-decoration: none; color: black; font-weight: bold; }
+
+        /* --- 控制器按钮 --- */
+        .container1 {
+            display: grid;
+            width: 200px; height: 200px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 50px;
+        }
+        .dua, .empat, .enam, .lapan {
+            border: 3px solid black;
+            border-radius: 50%;
+            background-color: white;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: transform 0.2s;
+        }
+        .dua:hover, .empat:hover, .enam:hover, .lapan:hover { transform: scale(1.15); background-color: #fffde7; }
+        .container1 img { width: 60px; height: 60px; pointer-events: none; }
+
+        /* --- 菜单弹窗 (同步自 LV3) --- */
+        #menu-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: none; 
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .menu-frame {
+            position: relative;
+            background: white;
+            padding: 40px 30px;
+            border-radius: 30px;
+            border: 6px solid #ffca28;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+            width: 400px;
+        }
+        .close-x {
+            position: absolute;
+            top: 15px; right: 20px;
+            font-size: 30px; cursor: pointer; color: #999; font-weight: bold;
+        }
+        .menu-lv-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 20px; margin: 30px 0;
+        }
+        .lv-btn {
+            width: 70px; height: 70px; background: #ffca28;
+            display: flex; justify-content: center; align-items: center;
+            text-decoration: none; color: black; font-weight: bold;
+            border-radius: 15px; border: 3px solid #333; transition: all 0.2s;
+            font-size: 24px;
+        }
+        .lv-btn:hover { background: #fff; transform: translateY(-5px); }
+        .lv-current { background: #fff !important; border-color: #ffca28; }
+        
+        .menu-footer { display: flex; justify-content: flex-end; gap: 15px; margin-top: 20px; }
+        .footer-circle { 
+            width: 60px; height: 60px; 
+            border: 3px solid black; 
+            border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; 
+            background: white; cursor: pointer; overflow: hidden; 
+            transition: transform 0.2s;
+        }
+        .footer-circle:hover,.footer-circle-home:hover { transform: scale(1.1); }
+        .footer-circle,.footer-circle-home { width: 70px; height: 70px; border: 3px solid black; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: white; cursor: pointer; overflow: hidden; }
+        .footer-circle img { width: 70%; }
+        .footer-circle-home img{
+            width: 80px;
+        }
+    </style> -->
+</head>
+<body>
+
+    <div id="btn-level-menu" onclick="toggleMenu(true)">
+        <img src="bianlitie.png" alt="menu">
+    </div>
+
+    <h1>LEVEL 4</h1>
+
+    <div class="main-content">
+        <div id="cookie-counter">
+            <img src="yubinggan.png" alt="cookie">
+            <div class="counter-text">
+                <p>剩余饼干</p>
+                <p id="remaining-count">0</p>
+            </div>
+        </div>
+
+        <div id="game-stage">
+            <div id="seterus">
+                <div id="balikrumah">
+                    <img src="miowhm.png" alt="winner">
+                </div>
+                <div class="nxt">
+                    <div class="rmh">
+                         <a href="miowst.html"><img src="rumah.png" alt="rmh" ></a>
+                    </div>
+                    <div class="blt">
+                        <a href="javascript:void(0)" onclick="toggleMenu(true)"><img src="bianlitie.png" alt="blt" width="45px"></a>
+                    </div>
+                    <div class="nxtlv">
+                        <a href="miowlv5.html" id="nxtlv">NEXT LEVEL</a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="player1">
+                <img src="miow1.png" alt="cat">
+            </div>
+
+            <div id="home">
+                <img src="miowhome.png" alt="home">
+            </div>
+
+            <div class="grid-container" id="maze-grid"></div>
+        </div>
+
+        <div class="container1">
+            <div></div>
+            <div class="dua" id="btn-up" onclick="movePlayer(-1, 0)"><img src="errow up.png"></div>
+            <div></div>
+            <div class="empat" id="btn-left" onclick="movePlayer(0, -1)"><img src="errow left.png"></div>
+            <div></div>
+            <div class="enam" id="btn-right" onclick="movePlayer(0, 1)"><img src="errow right.png"></div>
+            <div></div>
+            <div class="lapan" id="btn-down" onclick="movePlayer(1, 0)"><img src="errow down.png"></div>
+            <div></div>
+        </div>
+    </div>
+
+    <div id="menu-overlay">
+        <div class="menu-frame">
+            <div class="close-x" onclick="toggleMenu(false)">x</div>
+            <h2 style="margin-top:0; font-size:30px; color:#333;">选择关卡</h2>
+            <div class="menu-lv-grid">
+                <a href="miowlv1.html" class="lv-btn">1</a>
+                <a href="miowlv2.html" class="lv-btn">2</a>
+                <a href="miowlv3.html" class="lv-btn">3</a>
+                <a href="miowlv4.html" class="lv-btn lv-current">4</a>
+                <a href="miowlv5.html" class="lv-btn locked">5</a>
+                <a href="miowlv6.html" class="lv-btn locked">6</a>
+            </div>
+            <div class="menu-footer">
+                <a href="miowst.html" class="footer-circle-home">
+                    <img src="rumah.png" alt="home">
+                </a>
+                <div class="footer-circle" onclick="location.reload()">
+                    <img src="refresh.png" alt="refresh" style="width: 60%;">
+                </div>
+                <div class="footer-circle"></div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    const GRID_SIZE = 50; const ROWS = 10; const COLS = 10;
+
+    // 0=路径, 1=墙, 2=终点, 3=鱼饼干
+    const mazeMap = [
+        [0, 3, 0, 1, 0, 0, 0, 0, 3, 0],
+        [1, 0, 1, 1, 0, 1, 0, 1, 1, 0],
+        [0, 0, 0, 0, 3, 1, 3, 0, 1, 0],
+        [1, 1, 1, 1, 1, 1, 1, 0, 1, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+        [1, 3, 1, 1, 1, 1, 1, 1, 1, 3],
+        [0, 0, 1, 0, 0, 3, 0, 0, 0, 0],
+        [0, 1, 1, 0, 1, 0, 1, 1, 1, 1],
+        [3, 1, 0, 0, 1, 0, 1, 3, 0, 0],
+        [0, 0, 0, 1, 1, 3, 0, 0, 1, 2]
+    ];
+
+    const player1 = document.getElementById("player1");
+    const gridContainer = document.getElementById("maze-grid");
+    const victoryMsg = document.getElementById("seterus");
+    const menuOverlay = document.getElementById("menu-overlay");
+    const countDisplay = document.getElementById("remaining-count");
+    
+    let p1Row = 0; let p1Col = 0; let isGameOver = false;
+    let cookiesRemaining = 0;
+
+    function toggleMenu(show) {
+        menuOverlay.style.display = show ? "flex" : "none";
+    }
+
+    function createMaze() {
+        gridContainer.innerHTML = '';
+        cookiesRemaining = 0;
+        for (let r = 0; r < ROWS; r++) {
+            for (let c = 0; c < COLS; c++) {
+                const cell = document.createElement('div');
+                cell.classList.add('cell');
+                if (mazeMap[r][c] === 1) {
+                    cell.classList.add('wall');
+                } else if (mazeMap[r][c] === 2) {
+                    cell.classList.add('home-cell');
+                } else if (mazeMap[r][c] === 3) {
+                    cell.classList.add('cookie');
+                    cell.id = `cell-${r}-${c}`;
+                    const img = document.createElement('img');
+                    img.src = 'yubinggan.png';
+                    cell.appendChild(img);
+                    cookiesRemaining++;
+                } else {
+                    cell.classList.add('path');
+                }
+                gridContainer.appendChild(cell);
+            }
+        }
+        updateCountDisplay();
+    }
+
+    function updateCountDisplay() {
+        countDisplay.innerText = cookiesRemaining;
+    }
+
+    function updatePlayerPosition() {
+        player1.style.top = (p1Row * GRID_SIZE + 5) + "px";
+        player1.style.left = (p1Col * GRID_SIZE + 5) + "px";
+    }
+
+    function movePlayer(dr, dc) {
+        if (isGameOver || menuOverlay.style.display === "flex") return;
+        const tr = p1Row + dr; const tc = p1Col + dc;
+        if (tr >= 0 && tr < ROWS && tc >= 0 && tc < COLS) {
+            if (mazeMap[tr][tc] !== 1) {
+                // 吃饼干逻辑
+                if (mazeMap[tr][tc] === 3) {
+                    mazeMap[tr][tc] = 0;
+                    const cell = document.getElementById(`cell-${tr}-${tc}`);
+                    if (cell) {
+                        cell.innerHTML = '';
+                        cell.classList.remove('cookie');
+                    }
+                    cookiesRemaining--;
+                    updateCountDisplay();
+                }
+
+                p1Row = tr; p1Col = tc;
+                updatePlayerPosition();
+                
+                // 必须吃完所有饼干并到达终点
+                if (mazeMap[p1Row][p1Col] === 2 && cookiesRemaining === 0) endGame();
+            }
+        }
+    }
+
+    function endGame() { isGameOver = true; victoryMsg.style.display = "block"; }
+
+    window.onclick = function(e) { if (e.target == menuOverlay) toggleMenu(false); }
+
+    function setBtnScale(key, scale) {
+        const btns = { 'w': 'btn-up', 'a': 'btn-left', 's': 'btn-down', 'd': 'btn-right' };
+        const el = document.getElementById(btns[key]);
+        if (el) el.style.transform = `scale(${scale})`;
+    }
+
+    document.addEventListener("keydown", function(event) {
+        if (isGameOver || menuOverlay.style.display === "flex") return;
+        const key = event.key.toLowerCase();
+        setBtnScale(key, 1.2);
+        if (key === "w") movePlayer(-1, 0);
+        else if (key === "a") movePlayer(0, -1);
+        else if (key === "s") movePlayer(1, 0);
+        else if (key === "d") movePlayer(0, 1);
+    });
+
+    document.addEventListener("keyup", function(event) {
+        setBtnScale(event.key.toLowerCase(), 1);
+    });
+
+    createMaze();
+    updatePlayerPosition();
+</script>
+</body>
+</html>

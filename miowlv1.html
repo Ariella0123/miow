@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>猫咪迷宫历险记 - LEVEL 1</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="btn-level-menu" onclick="toggleMenu(true)">
+        <img src="bianlitie.png" alt="menu">
+    </div>
+
+    <h1>LEVEL 1</h1>
+
+    <div class="main-content">
+        <div id="game-stage">
+            <div id="seterus">
+                <div id="balikrumah">
+                    <img src="miowhm.png" alt="winner">
+                </div>
+                <div class="nxt">
+                    <div class="rmh">
+                         <a href="miowst.html"><img src="rumah.png" alt="home"></a>
+                    </div>
+                    <div class="blt">
+                        <a href="javascript:void(0)" onclick="toggleMenu(true)"><img src="bianlitie.png" alt="menu"></a>
+                    </div>
+                    <div class="nxtlv">
+                        <a href="miowlv2.html" id="nxtlv">NEXT LEVEL</a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="player1"><img src="miow1.png" alt="cat"></div>
+            <div id="home"><img src="miowhome.png" alt="home"></div>
+            <div class="grid-container" id="maze-grid"></div>
+        </div>
+
+        <div class="container1">
+            <div></div>
+            <div class="dua" onclick="movePlayer(-1, 0)"><img src="errow up.png"></div>
+            <div></div>
+            <div class="empat" onclick="movePlayer(0, -1)"><img src="errow left.png"></div>
+            <div></div>
+            <div class="enam" onclick="movePlayer(0, 1)"><img src="errow right.png"></div>
+            <div></div>
+            <div class="lapan" onclick="movePlayer(1, 0)"><img src="errow down.png"></div>
+            <div></div>
+        </div>
+    </div>
+
+    <div id="menu-overlay">
+        <div class="menu-frame">
+            <div class="close-x" onclick="toggleMenu(false)">x</div>
+            <h2 style="margin-top:0; font-size:30px; color:#333;">选择关卡</h2>
+            <div class="menu-lv-grid">
+                <a href="miowlv1.html" class="lv-btn lv-current">1</a>
+                <a href="miowlv2.html" class="lv-btn locked">2</a>
+                <a href="miowlv3.html" class="lv-btn locked">3</a>
+                <a href="miowlv4.html" class="lv-btn locked">4</a>
+                <a href="miowlv5.html" class="lv-btn locked">5</a>
+                <a href="miowlv6.html" class="lv-btn locked">6</a>
+            </div>
+            <div class="menu-footer">
+                <a href="miowst.html" class="footer-circle-home" ><img src="rumah.png" alt="Home" ></a>
+                <div class="footer-circle" onclick="location.reload()"><img src="refresh.png" alt="refresh"></div>
+                <div class="footer-circle"></div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    const GRID_SIZE = 50; const ROWS = 10; const COLS = 10;
+    const mazeMap = [
+        [0, 1, 0, 0, 0, 1, 0, 0, 0, 0], [0, 1, 0, 1, 0, 1, 0, 1, 1, 0], [0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+        [1, 1, 1, 1, 1, 1, 1, 0, 1, 1], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 1, 1, 1, 0, 1, 1, 1, 1],
+        [0, 1, 0, 0, 1, 0, 0, 0, 1, 0], [0, 0, 0, 1, 1, 1, 1, 1, 1, 0], [1, 1, 0, 1, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 1, 1, 1, 1, 2]
+    ];
+
+    const player1 = document.getElementById("player1");
+    const gridContainer = document.getElementById("maze-grid");
+    const victoryMsg = document.getElementById("seterus");
+    const menuOverlay = document.getElementById("menu-overlay");
+    
+    let p1Row = 0; let p1Col = 0;
+    let isGameOver = false;
+
+    function toggleMenu(show) { menuOverlay.style.display = show ? "flex" : "none"; }
+
+    function createMaze() {
+        gridContainer.innerHTML = '';
+        for (let r = 0; r < ROWS; r++) {
+            for (let c = 0; c < COLS; c++) {
+                const cell = document.createElement('div');
+                cell.classList.add('cell');
+                if (mazeMap[r][c] === 1) cell.classList.add('wall');
+                else if (mazeMap[r][c] === 2) cell.classList.add('home-cell');
+                else cell.classList.add('path');
+                gridContainer.appendChild(cell);
+            }
+        }
+    }
+
+    function updatePlayerPosition() {
+        player1.style.top = (p1Row * GRID_SIZE + 5) + "px";
+        player1.style.left = (p1Col * GRID_SIZE + 5) + "px";
+    }
+
+    function movePlayer(dr, dc) {
+        if (isGameOver || menuOverlay.style.display === "flex") return; 
+        const targetRow = p1Row + dr;
+        const targetCol = p1Col + dc;
+        if (targetRow >= 0 && targetRow < ROWS && targetCol >= 0 && targetCol < COLS) {
+            if (mazeMap[targetRow][targetCol] !== 1) {
+                p1Row = targetRow; p1Col = targetCol;
+                updatePlayerPosition();
+                if (mazeMap[p1Row][p1Col] === 2) endGame();
+            }
+        }
+    }
+
+    function endGame() { isGameOver = true; victoryMsg.style.display = "block"; }
+
+    // 键盘支持
+    document.addEventListener("keydown", function(event) {
+        if (isGameOver || menuOverlay.style.display === "flex") return;
+        const key = event.key.toLowerCase();
+        if (key === "w" || key === "arrowup") movePlayer(-1, 0);
+        else if (key === "a" || key === "arrowleft") movePlayer(0, -1);
+        else if (key === "s" || key === "arrowdown") movePlayer(1, 0);
+        else if (key === "d" || key === "arrowright") movePlayer(0, 1);
+    });
+
+    createMaze();
+    updatePlayerPosition();
+</script>
+</body>
+</html>

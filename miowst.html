@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>猫家之旅 - 启动界面</title>
+    <style>
+        /* 背景图设置 */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: url(miowbj.png);
+            background-size: cover;
+            background-position: center;
+            filter: blur(5px); 
+            z-index: -1; 
+            transform: scale(1.1);
+            transition: filter 0.5s ease;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+            /* 解决移动端点击高亮蓝框 */
+            -webkit-tap-highlight-color: transparent; 
+        }
+
+        /* --- 响应式 Logo --- */
+        .logo-img {
+            margin-top: 15vh; /* 使用高度百分比，适配不同长短的手机 */
+            width: 85vw;      /* 手机端宽度占屏幕 85% */
+            max-width: 600px; /* 电脑端最大不超过 600px */
+            height: auto;
+            /* 防止手机长按保存图片干扰游戏 */
+            pointer-events: none; 
+            user-select: none;
+        }
+
+        /* --- 开始游戏按钮 --- */
+        .start-btn {
+            display: flex;
+            width: 180px;
+            padding: 12px 20px;
+            margin-top: 40px;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            border: 2px solid rgb(252, 255, 158);
+            background-color: rgb(252, 255, 154);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            border-radius: 50px; /* 胶囊形状更适合手机 */
+            color: black;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        /* 手机端触摸反馈 */
+        .start-btn:active {
+            transform: scale(0.95);
+            background-color: #fff;
+        }
+
+        /* 电脑端悬停效果 */
+        @media (min-width: 768px) {
+            .start-btn:hover {
+                transform: scale(1.1);
+                background-color: #fff;
+            }
+        }
+
+        /* --- 弹窗遮罩 --- */
+        #modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        /* --- 关卡窗口 --- */
+        .level-window {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px 20px;
+            border-radius: 25px;
+            border: 4px solid #ffca28;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+            text-align: center;
+            width: 85%;      /* 手机端宽度自适应 */
+            max-width: 350px; /* 电脑端最大宽度 */
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .level-window h2 {
+            font-size: 28px;
+            margin: 0 0 20px 0;
+            color: #333;
+        }
+
+        /* 关卡按钮布局 */
+        .level-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .level-item {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            aspect-ratio: 1 / 1; /* 保持正方形 */
+            background-color: #ffca28;
+            border-radius: 12px;
+            font-size: 22px;
+            font-weight: bold;
+            color: black;
+            text-decoration: none;
+            transition: all 0.2s;
+            box-shadow: 0 4px 0 #c79a00;
+        }
+
+        .level-item:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #c79a00;
+            background-color: #fff;
+        }
+
+        .locked {
+            background-color: #ccc;
+            box-shadow: 0 4px 0 #999;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .close-btn {
+            margin-top: 25px;
+            display: inline-block;
+            padding: 8px 30px;
+            background: #eee;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #000000;
+            cursor: pointer;
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body>
+
+    <img src="miowst.png" alt="st" class="logo-img">
+
+    <div class="start-btn" onclick="openLevels()">开始游戏</div>
+
+    <div id="modal-overlay">
+        <div class="level-window">
+            <h2>选择关卡</h2>
+            <div class="level-grid">
+                <a href="miowlv1.html" class="level-item">1</a>
+                <a href="miowlv2.html" class="level-item locked">2</a>
+                <a href="miowlv3.html" class="level-item locked">3</a>
+                <a href="miowlv4.html" class="level-item locked">4</a>
+                <a href="miowlv5.html" class="level-item locked">5</a>
+                <a href="#" class="level-item locked">6</a>
+            </div>
+            <div class="close-btn" onclick="closeLevels()">BACK</div>
+        </div>
+    </div>
+
+    <script>
+        const overlay = document.getElementById('modal-overlay');
+
+        function openLevels() {
+            overlay.style.display = 'flex';
+        }
+
+        function closeLevels() {
+            overlay.style.display = 'none';
+        }
+
+        // 点击遮罩层外面也可以关闭
+        overlay.addEventListener('click', function(e) {
+            if (e.target === overlay) {
+                closeLevels();
+            }
+        });
+
+        // 阻止手机端长按弹出系统菜单
+        window.oncontextmenu = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        };
+    </script>
+</body>
+</html>

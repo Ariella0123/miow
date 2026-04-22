@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>猫家之旅 LEVEL 3</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="btn-level-menu" onclick="toggleMenu(true)">
+        <img src="bianlitie.png" alt="menu">
+    </div>
+
+    <h1>LEVEL 3</h1>
+
+    <div class="main-content">
+        <div id="game-stage">
+            <div id="seterus">
+                <div id="balikrumah">
+                    <img src="miowhm.png" alt="winner">
+                </div>
+                <div class="nxt">
+                    <div class="rmh">
+                         <a href="miowst.html"><img src="rumah.png" alt="rmh"></a>
+                    </div>
+                    <div class="blt">
+                        <a href="javascript:void(0)" onclick="toggleMenu(true)"><img src="bianlitie.png" alt="blt" width="45px"></a>
+                    </div>
+                    <div class="nxtlv">
+                        <a href="miowlv4.html" id="nxtlv">NEXT LEVEL</a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="player1">
+                <img src="miow1.png" alt="cat">
+            </div>
+
+            <div id="home">
+                <img src="miowhome.png" alt="home">
+            </div>
+
+            <div class="grid-container" id="maze-grid"></div>
+        </div>
+
+        <div class="container1">
+            <div></div>
+            <div class="dua" id="btn-up" onclick="movePlayer(-1, 0)"><img src="errow up.png"></div>
+            <div></div>
+            <div class="empat" id="btn-left" onclick="movePlayer(0, -1)"><img src="errow left.png"></div>
+            <div></div>
+            <div class="enam" id="btn-right" onclick="movePlayer(0, 1)"><img src="errow right.png"></div>
+            <div></div>
+            <div class="lapan" id="btn-down" onclick="movePlayer(1, 0)"><img src="errow down.png"></div>
+            <div></div>
+        </div>
+    </div>
+
+    <div id="menu-overlay">
+        <div class="menu-frame">
+            <div class="close-x" onclick="toggleMenu(false)">×</div>
+            <h2 style="margin-top:0; font-size:30px; color:#333;">选择关卡</h2>
+            <div class="menu-lv-grid">
+                <a href="miowlv1.html" class="lv-btn">1</a>
+                <a href="miowlv2.html" class="lv-btn">2</a>
+                <a href="miowlv3.html" class="lv-btn lv-current">3</a>
+                <a href="miowlv4.html" class="lv-btn locked">4</a>
+                <a href="miowlv5.html" class="lv-btn locked">5</a>
+                <a href="miowlv6.html" class="lv-btn locked">6</a>
+            </div>
+            <div class="menu-footer">
+                <a href="miowst.html" class="footer-circle-home">
+                    <img src="rumah.png" alt="home">
+                </a>
+                <div class="footer-circle" onclick="location.reload()">
+                    <img src="refresh.png" alt="refresh" style="width: 60%;">
+                </div>
+                <div class="footer-circle"></div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    const GRID_SIZE = 50; const ROWS = 10; const COLS = 10;
+
+    const mazeMap = [
+        [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 1, 1, 0, 1, 0, 1, 1, 0],
+        [0, 0, 0, 0, 0, 1, 0, 0, 1, 0],
+        [1, 1, 1, 1, 1, 1, 1, 0, 1, 1],
+        [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+        [0, 1, 1, 1, 0, 1, 1, 1, 1, 0],
+        [0, 1, 0, 0, 0, 1, 0, 0, 1, 0],
+        [0, 1, 0, 1, 1, 1, 0, 0, 0, 0],
+        [1, 1, 0, 0, 0, 1, 0, 1, 1, 0],
+        [0, 0, 0, 1, 0, 0, 0, 0, 1, 2]
+    ];
+
+    const player1 = document.getElementById("player1");
+    const gridContainer = document.getElementById("maze-grid");
+    const victoryMsg = document.getElementById("seterus");
+    const menuOverlay = document.getElementById("menu-overlay");
+    
+    let p1Row = 0; let p1Col = 0; let isGameOver = false;
+
+    function toggleMenu(show) {
+        menuOverlay.style.display = show ? "flex" : "none";
+    }
+
+    function createMaze() {
+        gridContainer.innerHTML = '';
+        for (let r = 0; r < ROWS; r++) {
+            for (let c = 0; c < COLS; c++) {
+                const cell = document.createElement('div');
+                cell.classList.add('cell');
+                if (mazeMap[r][c] === 1) cell.classList.add('wall');
+                else if (mazeMap[r][c] === 2) cell.classList.add('home-cell');
+                else cell.classList.add('path');
+                gridContainer.appendChild(cell);
+            }
+        }
+    }
+
+    function updatePlayerPosition() {
+        player1.style.top = (p1Row * GRID_SIZE + 5) + "px";
+        player1.style.left = (p1Col * GRID_SIZE + 5) + "px";
+    }
+
+    function movePlayer(dr, dc) {
+        if (isGameOver || menuOverlay.style.display === "flex") return;
+        const tr = p1Row + dr; const tc = p1Col + dc;
+        if (tr >= 0 && tr < ROWS && tc >= 0 && tc < COLS) {
+            if (mazeMap[tr][tc] !== 1) {
+                p1Row = tr; p1Col = tc;
+                updatePlayerPosition();
+                if (mazeMap[p1Row][p1Col] === 2) endGame();
+            }
+        }
+    }
+
+    function endGame() { isGameOver = true; victoryMsg.style.display = "block"; }
+
+    window.onclick = function(e) { if (e.target == menuOverlay) toggleMenu(false); }
+
+    // 键盘支持及动态缩放效果
+    function setBtnScale(key, scale) {
+        const btns = { 'w': 'btn-up', 'a': 'btn-left', 's': 'btn-down', 'd': 'btn-right' };
+        const el = document.getElementById(btns[key]);
+        if (el) el.style.transform = `scale(${scale})`;
+    }
+
+    document.addEventListener("keydown", function(event) {
+        if (isGameOver || menuOverlay.style.display === "flex") return;
+        const key = event.key.toLowerCase();
+        setBtnScale(key, 1.2);
+        if (key === "w") movePlayer(-1, 0);
+        else if (key === "a") movePlayer(0, -1);
+        else if (key === "s") movePlayer(1, 0);
+        else if (key === "d") movePlayer(0, 1);
+    });
+
+    document.addEventListener("keyup", function(event) {
+        setBtnScale(event.key.toLowerCase(), 1);
+    });
+
+    createMaze();
+    updatePlayerPosition();
+</script>
+</body>
+</html>
