@@ -271,7 +271,7 @@ body::before {
 }
 
 /* --- 响应式适配 --- */
-/* /* @media (max-width: 1000px) {
+/* @media (max-width: 1000px) {
     .main-content {
         flex-direction: column; /* 纵向排列 */
         /* gap: 20px;
@@ -300,4 +300,4 @@ body::before {
         margin-top: 10px;
     } */
 
-    /* h1 { margin: 10px 0; } */
+    /* h1 { margin: 10px 0; }

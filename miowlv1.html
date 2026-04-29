@@ -38,17 +38,6 @@
             <div class="grid-container" id="maze-grid"></div>
         </div>
 
-        <div class="container1">
-            <div></div>
-            <div class="dua" onclick="movePlayer(-1, 0)"><img src="errow up.png"></div>
-            <div></div>
-            <div class="empat" onclick="movePlayer(0, -1)"><img src="errow left.png"></div>
-            <div></div>
-            <div class="enam" onclick="movePlayer(0, 1)"><img src="errow right.png"></div>
-            <div></div>
-            <div class="lapan" onclick="movePlayer(1, 0)"><img src="errow down.png"></div>
-            <div></div>
-        </div>
     </div>
 
     <div id="menu-overlay">
@@ -133,6 +122,8 @@
         else if (key === "s" || key === "arrowdown") movePlayer(1, 0);
         else if (key === "d" || key === "arrowright") movePlayer(0, 1);
     });
+    
+    
 
     createMaze();
     updatePlayerPosition();
