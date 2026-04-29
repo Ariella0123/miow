@@ -76,57 +76,55 @@ body::before {
 #remaining-count { font-size: 24px; color: #d9534f; font-weight: bold; }
 
 /* --- 游戏舞台 --- */
-/* 游戏舞台在 PC 上固定大小，在手机上自适应 */
 #game-stage {
     position: relative;
-    width: 500px;  /* PC端默认大小 */
+    width: 500px;
     height: 500px;
-    max-width: 95vw; /* 手机端最大宽度 */
-    max-height: 95vw; /* 保持正方形 */
     border: 5px solid #333;
     background-color: #fff;
-    margin: 0 auto;
-    touch-action: none; /* 重要：防止滑动时网页跟着动 */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    flex-shrink: 0;
 }
 
 .grid-container {
     display: grid;
-    grid-template-columns: repeat(10, 1fr); /* 使用 1fr 让格子自动平分宽度 */
-    grid-template-rows: repeat(10, 1fr);
-    width: 100%;
-    height: 100%;
+    grid-template-columns: repeat(10, 50px);
+    grid-template-rows: repeat(10, 50px);
+    width: 100%; height: 100%;
 }
 
-.cell {
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
+.cell { width: 50px; height: 50px; box-sizing: border-box; position: relative; }
+.path { background-color: #fff; }
+.wall { background-color: #555; }
+.home-cell { background-color: #ffffff; }
+
+.cookie img {
+    position: absolute;
+    width: 35px; height: 35px;
+    top: 7.5px; left: 7.5px;
+    object-fit: contain;
+    transition: transform 0.2s ease-out; /* 增加吃掉时的缩放感 */
 }
 
-/* 角色大小也改为百分比，这样迷宫缩小时角色也跟着缩小 */
+/* --- 角色与终点 --- */
 #player1 {
     position: absolute;
-    width: 8%;  /* 10x10的格子，角色占格子的80%左右 */
-    height: 8%;
-    z-index: 10;
+    width: 40px; height: 40px;
+    left: 5px; top: 5px;
     transition: all 0.1s ease-out;
+    z-index: 10;
 }
 
-#player1 img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
+#player1 img { width: 100%; height: 100%; object-fit: contain; }
 
-/* 终点大小 */
 #home {
     position: absolute;
-    width: 10%;
-    height: 10%;
-    right: 0;
-    bottom: 0;
+    width: 50px; height: 50px;
+    left: 450px; top: 450px;
+    z-index: 5;
 }
-#home img { width: 100%; height: 100%; }
+
+#home img { width: 100%; height: 100%; object-fit: contain; }
 
 /* --- 胜利结算框 --- */
 #seterus {

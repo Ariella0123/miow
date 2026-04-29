@@ -72,9 +72,7 @@
     </div>
 
 <script>
-    // 移除固定像素变量，改为比例
-    const ROWS = 10; 
-    const COLS = 10;
+    const GRID_SIZE = 50; const ROWS = 10; const COLS = 10;
     const mazeMap = [
         [0, 1, 0, 0, 0, 1, 0, 0, 0, 0], [0, 1, 0, 1, 0, 1, 0, 1, 1, 0], [0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
         [1, 1, 1, 1, 1, 1, 1, 0, 1, 1], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 1, 1, 1, 0, 1, 1, 1, 1],
@@ -87,8 +85,7 @@
     const victoryMsg = document.getElementById("seterus");
     const menuOverlay = document.getElementById("menu-overlay");
     
-    let p1Row = 0; 
-    let p1Col = 0;
+    let p1Row = 0; let p1Col = 0;
     let isGameOver = false;
 
     function toggleMenu(show) { menuOverlay.style.display = show ? "flex" : "none"; }
@@ -107,12 +104,9 @@
         }
     }
 
-    // --- 核心修改：使用百分比定位 ---
     function updatePlayerPosition() {
-        // 每个格子占据 10% (100 / 10)
-        // 加 1% 是为了让角色在格子中间居中
-        player1.style.top = (p1Row * 10 + 1) + "%";
-        player1.style.left = (p1Col * 10 + 1) + "%";
+        player1.style.top = (p1Row * GRID_SIZE + 5) + "px";
+        player1.style.left = (p1Col * GRID_SIZE + 5) + "px";
     }
 
     function movePlayer(dr, dc) {
