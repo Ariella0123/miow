@@ -38,6 +38,17 @@
             <div class="grid-container" id="maze-grid"></div>
         </div>
 
+        <div class="container1">
+            <div></div>
+            <div class="dua" onclick="movePlayer(-1, 0)"><img src="errow up.png"></div>
+            <div></div>
+            <div class="empat" onclick="movePlayer(0, -1)"><img src="errow left.png"></div>
+            <div></div>
+            <div class="enam" onclick="movePlayer(0, 1)"><img src="errow right.png"></div>
+            <div></div>
+            <div class="lapan" onclick="movePlayer(1, 0)"><img src="errow down.png"></div>
+            <div></div>
+        </div>
     </div>
 
     <div id="menu-overlay">
@@ -131,59 +142,6 @@
 
     createMaze();
     updatePlayerPosition();
-
-    // --- 手机滑动控制逻辑 ---
-    let touchStartX = 0;
-    let touchStartY = 0;
-    let touchEndX = 0;
-    let touchEndY = 0;
-
-    // 监听触摸开始
-    document.addEventListener('touchstart', function(event) {
-        // 防止滑动屏幕时页面跟着滚动
-        if (event.target.closest('#game-stage')) {
-            // event.preventDefault(); // 如果需要完全锁定屏幕滚动可以取消注释
-        }
-        touchStartX = event.changedTouches[0].screenX;
-        touchStartY = event.changedTouches[0].screenY;
-    }, { passive: false });
-
-    // 监听触摸结束
-    document.addEventListener('touchend', function(event) {
-        touchEndX = event.changedTouches[0].screenX;
-        touchEndY = event.changedTouches[0].screenY;
-        handleSwipe();
-    }, { passive: false });
-
-    function handleSwipe() {
-        if (isGameOver || menuOverlay.style.display === "flex") return;
-
-        const dx = touchEndX - touchStartX;
-        const dy = touchEndY - touchStartY;
-        const absDx = Math.abs(dx);
-        const absDy = Math.abs(dy);
-
-        // 只有当滑动距离大于 30 像素时才触发移动，防止误触
-        const threshold = 30;
-
-        if (Math.max(absDx, absDy) > threshold) {
-            if (absDx > absDy) {
-                // 横向滑动
-                if (dx > 0) {
-                    movePlayer(0, 1);  // 向右
-                } else {
-                    movePlayer(0, -1); // 向左
-                }
-            } else {
-                // 纵向滑动
-                if (dy > 0) {
-                    movePlayer(1, 0);  // 向下
-                } else {
-                    movePlayer(-1, 0); // 向上
-                }
-            }
-        }
-    }
 </script>
 </body>
 </html>
